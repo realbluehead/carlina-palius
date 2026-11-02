@@ -44,6 +44,21 @@ Per provar-ho directament en un mòbil connectat per USB:
 JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" ./gradlew installDebug
 ```
 
+## Actualitzacions automàtiques
+
+Cada cop que s'obre, l'app mira a GitHub (`releases/latest/download/version.json`) si hi ha una versió amb un `versionCode` més alt. Si n'hi ha, la baixa i la instal·la.
+
+- La **primera** actualització demana tocar «Actualitza» (i, si cal, permetre que Carlina Palius instal·li apps).
+- A partir d'aleshores, a Android 12 o més, s'instal·len **soles**, sense preguntar.
+
+Per publicar una versió nova: puja `versionCode` i `versionName` a `app/build.gradle.kts` i executa
+
+```bash
+./release.sh "Què hi ha de nou"
+```
+
+S'ha de compilar sempre des del mateix Mac: l'APK es signa amb la clau de debug local, i si la clau canvia els mòbils no poden actualitzar.
+
 ## Estructura
 
 ```
@@ -51,6 +66,7 @@ app/src/main/java/cat/carlinapalius/
 ├── MainActivity.kt          navegació: configuració → menú → llista
 ├── data/
 │   ├── FamilyPrefs.kt       codi de família i nom, guardats al mòbil
+│   ├── Updater.kt           comprova i instal·la versions noves des de GitHub
 │   └── TodoRepository.kt    lectura/escriptura a Firestore en temps real
 └── ui/
     ├── SetupScreen.kt       crear o unir-se a una família

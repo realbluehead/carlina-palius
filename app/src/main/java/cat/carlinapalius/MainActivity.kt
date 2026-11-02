@@ -11,14 +11,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
 import cat.carlinapalius.data.FamilyPrefs
 import cat.carlinapalius.data.TodoRepository
+import cat.carlinapalius.data.Updater
 import cat.carlinapalius.ui.CarlinaTheme
 import cat.carlinapalius.ui.FirebaseMissingScreen
 import cat.carlinapalius.ui.MenuScreen
 import cat.carlinapalius.ui.SetupScreen
 import cat.carlinapalius.ui.TodoScreen
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.launch
 
 private enum class Screen { Menu, Todos }
 
@@ -65,6 +68,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Cada cop que s'obre l'app mira si hi ha una versió nova a GitHub.
+        lifecycleScope.launch { Updater.checkAndInstall(this@MainActivity) }
     }
 
     private fun shareCode(code: String) {
