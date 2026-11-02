@@ -28,20 +28,25 @@ object Updater {
 
     private var lastCheck = 0L
 
-    suspend fun checkAndInstall(context: Context) {
+    /** [manual] és quan l'usuari ho demana amb el botó: no s'espera i avisa del resultat. */
+    suspend fun checkAndInstall(context: Context, manual: Boolean = false) {
         val now = System.currentTimeMillis()
-        if (now - lastCheck < CHECK_INTERVAL_MS) return
+        if (!manual && now - lastCheck < CHECK_INTERVAL_MS) return
         lastCheck = now
         try {
             val latest = withContext(Dispatchers.IO) { fetchLatest() }
             val installed = installedVersionCode(context)
-            if (latest.code <= installed) return
+            if (latest.code <= installed) {
+                if (manual) Toast.makeText(context, "Ja tens l'última versió", Toast.LENGTH_SHORT).show()
+                return
+            }
             Log.i(TAG, "Versió nova ${latest.name} (${latest.code} > $installed)")
             Toast.makeText(context, "Actualitzant a la versió ${latest.name}…", Toast.LENGTH_SHORT).show()
             withContext(Dispatchers.IO) { downloadAndInstall(context.applicationContext) }
         } catch (e: Exception) {
             // Sense xarxa o sense release: ja ho tornarem a provar més tard.
             Log.w(TAG, "No s'ha pogut comprovar l'actualització", e)
+            if (manual) Toast.makeText(context, "No s'ha pogut comprovar: mira la connexió", Toast.LENGTH_SHORT).show()
             lastCheck = 0L
         }
     }
@@ -55,6 +60,9 @@ object Updater {
 
     private fun installedVersionCode(context: Context): Long =
         context.packageManager.getPackageInfo(context.packageName, 0).longVersionCode
+
+    fun installedVersionName(context: Context): String =
+        context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty()
 
     private fun downloadAndInstall(context: Context) {
         val installer = context.packageManager.packageInstaller

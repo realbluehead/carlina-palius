@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +40,8 @@ import cat.carlinapalius.data.FamilyPrefs
 fun MenuScreen(
     memberName: String,
     familyCode: String,
+    versionName: String,
+    onCheckUpdates: () -> Unit,
     onOpenTodos: () -> Unit,
     onShareCode: () -> Unit,
     onLeaveFamily: () -> Unit,
@@ -48,8 +51,20 @@ fun MenuScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Carlina Palius") },
+                title = {
+                    Column {
+                        Text("Carlina Palius")
+                        Text(
+                            "versió $versionName",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.outline,
+                        )
+                    }
+                },
                 actions = {
+                    IconButton(onClick = onCheckUpdates) {
+                        Icon(Icons.Default.SystemUpdate, contentDescription = "Busca actualitzacions")
+                    }
                     IconButton(onClick = { showFamily = true }) {
                         Icon(Icons.Default.Group, contentDescription = "Família")
                     }

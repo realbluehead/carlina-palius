@@ -58,6 +58,10 @@ class MainActivity : ComponentActivity() {
                     else -> MenuScreen(
                         memberName = memberName,
                         familyCode = code,
+                        versionName = Updater.installedVersionName(this),
+                        onCheckUpdates = {
+                            lifecycleScope.launch { Updater.checkAndInstall(this@MainActivity, manual = true) }
+                        },
                         onOpenTodos = { screen = Screen.Todos },
                         onShareCode = { shareCode(code) },
                         onLeaveFamily = {
