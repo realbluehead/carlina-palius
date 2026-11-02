@@ -13,17 +13,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import cat.carlinapalius.data.FamilyPrefs
+import cat.carlinapalius.data.PantryRepository
 import cat.carlinapalius.data.TodoRepository
 import cat.carlinapalius.data.Updater
 import cat.carlinapalius.ui.CarlinaTheme
 import cat.carlinapalius.ui.FirebaseMissingScreen
 import cat.carlinapalius.ui.MenuScreen
+import cat.carlinapalius.ui.PantryScreen
 import cat.carlinapalius.ui.SetupScreen
 import cat.carlinapalius.ui.TodoScreen
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.launch
 
-private enum class Screen { Menu, Todos }
+private enum class Screen { Menu, Todos, Pantry }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +57,12 @@ class MainActivity : ComponentActivity() {
                         TodoScreen(repository, memberName, onBack = { screen = Screen.Menu })
                     }
 
+                    screen == Screen.Pantry -> {
+                        BackHandler { screen = Screen.Menu }
+                        val repository = remember(code) { PantryRepository(code) }
+                        PantryScreen(repository, onBack = { screen = Screen.Menu })
+                    }
+
                     else -> MenuScreen(
                         memberName = memberName,
                         familyCode = code,
@@ -63,6 +71,7 @@ class MainActivity : ComponentActivity() {
                             lifecycleScope.launch { Updater.checkAndInstall(this@MainActivity, manual = true) }
                         },
                         onOpenTodos = { screen = Screen.Todos },
+                        onOpenPantry = { screen = Screen.Pantry },
                         onShareCode = { shareCode(code) },
                         onLeaveFamily = {
                             prefs.familyCode = null

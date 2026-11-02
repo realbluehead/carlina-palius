@@ -1,7 +1,10 @@
 # Carlina Palius
 
 App Android nativa (Kotlin + Jetpack Compose) per compartir coses entre els membres de la família.
-De moment té un menú amb una sola opció: una **llista de tasques compartida**.
+Té un menú amb dues seccions, compartides amb tota la família:
+
+- **Llista de tasques**: coses per fer, amb qui les ha afegit.
+- **Rebost**: productes de casa amb la quantitat que en queda i botons de + i −.
 
 ## Descarregar
 
@@ -11,7 +14,7 @@ Obre l'enllaç des del mòbil, accepta instal·lar apps d'aquesta font i toca **
 
 ## Com funciona la sincronització
 
-- Les dades es guarden a **Firebase Cloud Firestore** (`families/{codi}/todos`).
+- Les dades es guarden a **Firebase Cloud Firestore** (`families/{codi}/todos` i `families/{codi}/pantry`).
 - La primera vegada, cadascú escriu el seu nom i, o bé **crea una família** (l'app genera un codi tipus `ABCD-EFGH`), o bé **s'hi uneix** amb el codi que li ha passat un altre membre.
 - Tothom que té el mateix codi veu la mateixa llista, i els canvis arriben a l'instant.
 - Funciona sense connexió: els canvis es guarden al mòbil i es pugen quan torna la xarxa.
@@ -67,11 +70,13 @@ app/src/main/java/cat/carlinapalius/
 ├── data/
 │   ├── FamilyPrefs.kt       codi de família i nom, guardats al mòbil
 │   ├── Updater.kt           comprova i instal·la versions noves des de GitHub
-│   └── TodoRepository.kt    lectura/escriptura a Firestore en temps real
+│   ├── TodoRepository.kt    llista de tasques a Firestore en temps real
+│   └── PantryRepository.kt  productes del rebost i quantitats
 └── ui/
     ├── SetupScreen.kt       crear o unir-se a una família
     ├── MenuScreen.kt        menú principal (afegir-hi les opcions noves aquí)
     ├── TodoScreen.kt        la llista de tasques
+    ├── PantryScreen.kt      el rebost, amb + i −
     └── Theme.kt
 ```
 

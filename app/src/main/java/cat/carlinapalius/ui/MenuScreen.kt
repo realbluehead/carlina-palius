@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -43,6 +44,7 @@ fun MenuScreen(
     versionName: String,
     onCheckUpdates: () -> Unit,
     onOpenTodos: () -> Unit,
+    onOpenPantry: () -> Unit,
     onShareCode: () -> Unit,
     onLeaveFamily: () -> Unit,
 ) {
@@ -89,6 +91,12 @@ fun MenuScreen(
                 title = "Llista de tasques",
                 subtitle = "Compartida amb tota la família",
                 onClick = onOpenTodos,
+            )
+            MenuEntry(
+                icon = Icons.Default.Kitchen,
+                title = "Rebost",
+                subtitle = "Què tenim a casa i quant en queda",
+                onClick = onOpenPantry,
             )
         }
     }
