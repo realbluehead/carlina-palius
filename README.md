@@ -6,6 +6,8 @@ Té un menú amb dues seccions, compartides amb tota la família:
 - **Llista de tasques**: coses per fer, amb qui les ha afegit.
 - **Rebost**: productes de casa amb la quantitat que en queda i botons de + i −.
 
+A dalt del menú també mostra quin residu toca treure avui (i demà) segons el calendari del Sector Nord, a `data/Recycling.kt`. Cada dia de recollida, a les 7 del matí, envia una notificació «Avui toca reciclar …».
+
 ## Descarregar
 
 📲 **[Baixa l'última versió (APK)](https://github.com/realbluehead/carlina-palius/releases/latest/download/carlina-palius.apk)**
@@ -69,6 +71,8 @@ app/src/main/java/cat/carlinapalius/
 ├── MainActivity.kt          navegació: configuració → menú → llista
 ├── data/
 │   ├── FamilyPrefs.kt       codi de família i nom, guardats al mòbil
+│   ├── Recycling.kt         calendari de recollida de residus (Sector Nord)
+│   ├── RecyclingReminder.kt notificació diària de les 7:00
 │   ├── Updater.kt           comprova i instal·la versions noves des de GitHub
 │   ├── TodoRepository.kt    llista de tasques a Firestore en temps real
 │   └── PantryRepository.kt  productes del rebost i quantitats

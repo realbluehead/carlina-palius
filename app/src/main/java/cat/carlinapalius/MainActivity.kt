@@ -1,6 +1,9 @@
 package cat.carlinapalius
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -14,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import cat.carlinapalius.data.FamilyPrefs
 import cat.carlinapalius.data.PantryRepository
+import cat.carlinapalius.data.RecyclingReminder
 import cat.carlinapalius.data.TodoRepository
 import cat.carlinapalius.data.Updater
 import cat.carlinapalius.ui.CarlinaTheme
@@ -32,6 +36,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val prefs = FamilyPrefs(this)
+        RecyclingReminder.schedule(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+        }
         val firebaseReady = FirebaseApp.getApps(this).isNotEmpty()
 
         setContent {

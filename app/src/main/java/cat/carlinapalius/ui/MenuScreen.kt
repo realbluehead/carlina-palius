@@ -1,6 +1,9 @@
 package cat.carlinapalius.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Kitchen
+import androidx.compose.material.icons.filled.Recycling
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -31,9 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import cat.carlinapalius.data.FamilyPrefs
+import cat.carlinapalius.data.Recycling
+import java.time.LocalDate
 
 /** Menú principal. Cada funcionalitat nova de l'app hi afegeix una entrada. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +94,7 @@ fun MenuScreen(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
+            RecyclingCard(LocalDate.now())
             MenuEntry(
                 icon = Icons.Default.Checklist,
                 title = "Llista de tasques",
@@ -124,6 +133,44 @@ fun MenuScreen(
                 TextButton(onClick = { showFamily = false }) { Text("Tanca") }
             },
         )
+    }
+}
+
+@Composable
+private fun RecyclingCard(today: LocalDate) {
+    val waste = Recycling.wasteOn(today)
+    val tomorrow = Recycling.wasteOn(today.plusDays(1))
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            if (waste != null) {
+                Box(
+                    Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color(waste.color)),
+                )
+            } else {
+                Icon(Icons.Default.Recycling, contentDescription = null, modifier = Modifier.size(32.dp))
+            }
+            Column(Modifier.weight(1f)) {
+                Text("Avui toca reciclar", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    waste?.label ?: "Res, avui no hi ha recollida",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    "Demà: ${tomorrow?.label ?: "res"}",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+        }
     }
 }
 
